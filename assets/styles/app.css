@@ -1,3 +1,10 @@
 body {
-    background-color: skyblue;
+    background-color: rgb(134, 64, 168);
+}
+.full-height {
+    min-height: 100vh;
+}
+.half-page{
+    position: relative;
+    top: 20vh;
 }

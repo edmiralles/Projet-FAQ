@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Question {{question.id}}{% endblock %}
+
+{% block body %}
+
+<div class="container mx-auto p-3 mb-2 bg-secondary text-white full-height">
+    <a href="{{ path('app_home') }}" class="text-white">retour</a>
+    <div class ="p-3 text-center">
+        <h1>{{question.titre}}</h1>
+        <p>{{question.contenu}}</p>
+    </div>
+    <div class="d-flex w-100 justify-content-between">
+        <small>publié par {{question.user.nom}} le {{question.dateCreation|date("d.m.Y")}} </small>
+        <img src="{{ asset(question.user.avatar) }}" alt="{{question.user.nom}}">
+    </div>
+    <div class="list-group">
+        {% for reponse in question.reponses %}
+            {#is same as() est equivalent à === #}
+            <div class="{{ reponse.user.id is same as (question.user.id) ? 'border border-danger list-group-item list-group-item-action': 'list-group-item list-group-item-action'}}">
+                {% if reponse.user.id is same as (question.user.id) %}
+                    <span class=" badge rounded-pill text-bg-danger">
+                        Réponse de l'auteur
+                    </span>
+                {% endif %}
+                <p class="mb-1">{{reponse.contenu}}</p>
+                <div class="d-flex w-100 justify-content-between">
+                    <small lass="text-body-secondary">posté par : {{reponse.user.nom}}
+                        <img src="{{reponse.user.avatar}}" alt="{{reponse.user.nom}}">
+                    </small>
+                    <small class="text-body-secondary">{{reponse.dateCreation|date("d.m.Y")}}</small>
+                </div>
+            </div>
+        {% else %}
+            <div class="list-group-item list-group-item-action">
+                    <p class="mb-1">aucune réponses, veux-tu être le premier à commenter?</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

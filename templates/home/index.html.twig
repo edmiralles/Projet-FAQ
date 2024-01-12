@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Foire aux questions{% endblock %}
+
+{% block body %}
+
+
+<div class="container mx-auto bg-secondary text-white full-height">
+    <div class="list-group p-3">
+        <div class ="p-3 text-center">
+        <h1>Foire aux questions</h1>
+            {% for messageFlash in app.flashes('success') %}
+                <div class="alert alert-success">
+                    {{ messageFlash }}
+                </div>
+            {% endfor %}
+    </div>
+        {% for question in questions %}
+            <a href="{{ path('app_question', {id:question.id}) }}" class="list-group-item list-group-item-action">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">{{question.titre}}</h5>
+                    <small class="text-body-secondary">publié le : {{question.dateCreation|date("d.m.Y")}}</small>
+                </div>
+                    <p class="mb-1">{{question.contenu}}</p>
+                    <small lass="text-body-secondary">posée par : {{question.user.nom}}
+                    <img src="{{ asset(question.user.avatar) }}" alt="{{question.user.nom}}"></small>
+            </a>
+        {% else %}
+            <a href="#" class="list-group-item list-group-item-action">
+                <p class="mb-1">Il n'y a aucune question? </p>
+                <small lass="text-body-secondary">Soit le deuxième à en écrire une! </small>
+            </a>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
