@@ -38,9 +38,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $avatar = null;
 
-    //permet d'effectuer un upload d'image
-    private ?File $avatarFile = null;
-
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Question::class, orphanRemoval: true)]
     private Collection $questions;
 
@@ -149,18 +146,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setAvatar(?string $avatar): static
     {
         $this->avatar = $avatar;
-
-        return $this;
-    }
-
-    public function getAvatarFile(): ?File
-    {
-        return $this->avatarFile;
-    }
-
-    public function setAvatarFile(?File $avatarFile): static
-    {
-        $this->avatarFile = $avatarFile;
 
         return $this;
     }

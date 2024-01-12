@@ -16,6 +16,7 @@ use Symfony\Component\Mime\Address;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
+use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 
@@ -29,7 +30,7 @@ class RegistrationController extends AbstractController
     }
 
     #[Route('/register', name: 'app_register')]
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, UserAuthenticatorInterface $userAuthenticator, UserAuthenticator $authenticator, EntityManagerInterface $entityManager): Response
+    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, UserAuthenticatorInterface $userAuthenticator, UserAuthenticator $authenticator, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
@@ -45,6 +46,29 @@ class RegistrationController extends AbstractController
             );
 
             // upload avatar
+            //recupere les données du fichier
+            /** @var UploadedFile $avatarFile */
+            $avatarFile = $form->get('avatarFile')->getData();
+
+            //si existant, on upload
+            if($avatarFile){
+                //recupere le nom original du fichier envoyé
+                $originalFilename = pathinfo($avatarFile->getClientOriginalName(), PATHINFO_FILENAME);
+
+                //"slugify" le nom du fichier
+                $safeFilename = $slugger->slug($originalFilename);
+                $uniqid = uniqid();
+
+                //nouveau nom du fichier : nom_original_125858.png
+                $newFilename = "$safeFilename-$uniqid.{$avatarFile->guessExtension()}";
+
+                //upload
+                $avatarFile->move('avatars', $newFilename);
+
+                //setter
+                $user->setAvatar($newFilename);
+            }
+
             
             $entityManager->persist($user);
             $entityManager->flush();
@@ -67,8 +91,8 @@ class RegistrationController extends AbstractController
         }
 
         return $this->render('registration/register.html.twig', [
-            'registrationForm' => $form->createView(),
-        ]);
+            'registrationForm' => $form,
+        ],/* new Response(null, $form->isSubmitted() && !$form->isValid()? 422 : 200)*/);
     }
 
     #[Route('/verify/email', name: 'app_verify_email')]
