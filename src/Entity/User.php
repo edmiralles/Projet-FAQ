@@ -12,7 +12,7 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[UniqueEntity(fields: ['email', 'nom'], message: 'tes identifiants sont deja utilisés')]
+#[UniqueEntity(fields: ['email'/*, 'nom'*/], message: 'tes identifiants sont deja utilisés')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -32,7 +32,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
-    #[ORM\Column(length: 50 , unique: true)]
+    #[ORM\Column(length: 50 /*, unique: true*/)]
     private ?string $nom = null;
 
     #[ORM\Column(length: 255, nullable: true)]

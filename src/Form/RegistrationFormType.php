@@ -78,7 +78,7 @@ class RegistrationFormType extends AbstractType
                 'constraints' => [
                     new File([
                         'extensions' => ['png', 'jpeg', 'jpg', 'webp'],
-                        'extensionsMessage' =>'votre fichier n\'est pas une image accepté',
+                        'extensionsMessage' =>'votre fichier n\'est pas une image acceptée',
                         'maxSize' =>'1M',
                         'maxSizeMessage' => "Votre image est trop volumineuse, l'image ne dois pas dépasser {{ limit }}."
                     ]),
