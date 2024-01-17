@@ -4,10 +4,10 @@
 
 {% block body %}
 <form method="post" class="w-50 mx auto p-2 container half-page bg-secondary text-white rounded-2">
-    {% if error %}
-        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-    {% endif %}
-
+        {% if error %}
+            <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+        {% endif %}
+        
     {% for messageFlash in app.flashes('success') %}
         <div class="alert alert-success">
             {{ messageFlash }}
@@ -22,6 +22,9 @@
     <div class="mb-3">
         <label for="inputPassword">Password</label>
         <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
+        <small>
+            <a href="{{ path('app_forgot_password_request') }}" class ="text-white">Mot de passe oublié?</a>
+        </small>
     </div>
     <div class="mb-4">
         <label>

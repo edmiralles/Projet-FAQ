@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}profil de {{ user.nom }}{% endblock %}
+
+{% block body %}
+
+<div class="w-50 mx auto p-2 container half-page bg-secondary text-white rounded-2">
+     <h1 class="h3 font-weight-normal mb-4">Mon profil</h1>
+        {% for messageFlash in app.flashes('success') %}
+            <div class="alert alert-success">
+                {{ messageFlash }}
+            </div>
+        {% endfor %}
+        <ul>
+            <li><p class="mb-4"> Nom: {{ user.nom }}</p></li>
+            <li><p class="mb-4"> email: {{ user.email }}</p></li>
+            <li><p class="mb-4"> Photo de profil: <img src="{{ asset(user.avatar) }}" alt="{{ user.nom }}"></p></li>
+        </ul>
+        <div class="text-end">
+            <a href="{{ path('app_user_profile_update', {id:app.user.id}) }}" class="btn btn-primary">Modifier mon profil</a>
+            <a href="" class="btn btn-danger">Supprimer mon compte</a>
+        </div>
+    </div>
+
+{% endblock %}

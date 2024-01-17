@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello QuestionController!{% endblock %}
+
+{% block body %}
+
+   <div class="w-50 mx auto p-2 container half-page bg-secondary text-white rounded-2">
+      <a href="{{ path('app_home') }}" class="text-white mb-3">retour</a>
+      <h1 class="h3 p-3">Posez votre question</h1>
+    {{ form(questionForm) }}
+    </div>
+
+{% endblock %}

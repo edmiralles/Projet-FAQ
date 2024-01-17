@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}profil{% endblock %}
+
+{% block body %}
+
+    <div class="w-50 mx auto p-2 container half-page bg-secondary text-white rounded-2">
+        <h1 class="h3 font-weight-normal">Modifier votre profil</h1>
+        <a href="{{ path('app_user_profile', {id:app.user.id}) }}" class="text-white">retour</a>
+        {{ form(formEditProfil) }}
+    </div>
+
+{% endblock %}
