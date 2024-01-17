@@ -30,7 +30,7 @@ class UploadService
         $filesystem = new Filesystem;
 
         //supprime l'ancienne image
-        if($oldFile !== null && $filesystem->exists("$oldFile")){
+        if($oldFile !== null && $filesystem->exists("$oldFile") && $oldFile !== 'imgs/user_default.jpg'){
             //alors on supprime celui-ci
             $filesystem->remove("$oldFile");
         }

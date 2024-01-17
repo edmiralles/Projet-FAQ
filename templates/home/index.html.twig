@@ -21,6 +21,11 @@
                     {{ messageFlash }}
                 </div>
         {% endfor %}
+                {% for messageFlash in app.flashes('error') %}
+            <div class="alert alert-danger">
+                {{ messageFlash }}
+            </div>
+        {% endfor %}
 
     </div>
         {% for question in questions %}
@@ -31,7 +36,7 @@
                 </div>
                     <p class="mb-1">{{question.contenu}}</p>
                     <small lass="text-body-secondary">posée par : {{question.user.nom}}
-                    <img src="{{ asset(question.user.avatar) }}" alt="{{question.user.nom}}"></small>
+                    <img class="rounded-circle" src="{{ asset(question.user.avatar) }}" alt="{{question.user.nom}}"></small>
             </a>
         {% else %}
             <a href="#" class="list-group-item list-group-item-action">

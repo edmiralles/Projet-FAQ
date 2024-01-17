@@ -138,7 +138,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getAvatar(): ?string
     {
         if($this -> avatar === null){
-            return 'imgs/user-default-final-bis.jpg';
+            return 'imgs/user_default.jpg';
         }
         return "avatars/$this->avatar";
     }
