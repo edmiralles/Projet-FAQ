@@ -2,8 +2,12 @@
 
 {% block title %}Question {{question.id}}{% endblock %}
 
-{% block body %}
+{% block stylesheets %}
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+{% endblock %}
 
+{% block body %}
+{#question#}
 <div class="container mx-auto p-3 mb-2 bg-secondary text-white full-height">
     <a href="{{ path('app_home') }}" class="text-white">retour</a>
     <div class ="p-3 text-center">
@@ -12,44 +16,93 @@
     </div>
     <div class="d-flex w-100 justify-content-between mb-2">
         <small>publié par {{question.user.nom}} le {{question.dateCreation|date("d.m.Y")}} </small>
-        <img class="rounded-circle" src="{{ asset(question.user.avatar) }}" alt="{{question.user.nom}}">
+            {% if is_granted('QUESTION_DELETE', question) %}
+            <div class="d-flex">
+                <form action="{{ path('app_question_update', {id:question.id}) }}" method="post">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <input type="hidden" name="_token" value="{{ csrf_token('update_question') }}">
+                    <button type"submit" class="btn btn-primary question-modify">Modifier</button>
+                </form>
+                <form action="{{ path('app_delete_question', {id:question.id}) }}" method="post" onsubmit="return confirm('Êtes-vous certain de vouloir supprimer cette question?')">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete_question') }}">
+                    <button type"submit" class="btn btn-danger question-modify">Supprimer</button>
+                </form>
+            </div>
+        {% endif %}
+        <img class="rounded-circle" src="{{ asset(question.user.avatar) }}" alt="{{question.user.nom}}" style="width: 25px; height: 25px">
     </div>
+{#messages flash#}
     {% for message in app.flashes('success') %}
         <div class="alert alert-success">
             {{ message }}
         </div>
     {% endfor %}
+    {% for messageFlash in app.flashes('error') %}
+    <div class="alert alert-danger">
+        {{ messageFlash }}
+    </div>
+    {% endfor %}
     <div class="list-group">
         {% for reponse in question.reponses %}
-            {#is same as() est equivalent à === #}
+{#is same as() est equivalent à === #}
+{#gestion des réponses d'auteur et d'utilisateur connecté#}
             <div class="{{ reponse.user.id is same as (question.user.id) ? 'border border-danger list-group-item list-group-item-action': 'list-group-item list-group-item-action'}}">
                 {% if reponse.user.id is same as (question.user.id) %}
                     <span class=" badge rounded-pill text-bg-danger">
                         Réponse de l'auteur
                     </span>
                 {% endif %}
+                {% if reponse.user is same as (app.user) %}
+                    <span class=" badge rounded-pill text-bg-success">
+                        Votre réponse
+                    </span>
+                {% endif %}
+{#liste réponses#}
                 <p class="mb-1">{{reponse.contenu}}</p>
                 <div class="d-flex w-100 justify-content-between">
                     <small lass="text-body-secondary">posté par : {{reponse.user.nom}}
-                        <img class="rounded-circle" src="{{asset(reponse.user.avatar)}}" alt="{{reponse.user.nom}}">
+                        <img class="rounded-circle" src="{{asset(reponse.user.avatar)}}" alt="{{reponse.user.nom}}" style="width: 25px; height: 25px">
                     </small>
+                    <div class="d-flex">
+{#votes#}
+                        {#{% if reponse.user is not same as (app.user) and hasVoted is not same as (true) %}#}
+                        {% if is_granted('REPONSE_VOTE', reponse) %}
+                            <form action="{{ path('app_reponse_vote', {id: reponse.id}) }}" method="post">
+                                <input type="hidden" name="_token" value="{{ csrf_token('vote-'~ reponse.id) }}">
+                                <button type"submit"><span class="material-symbols-outlined"> favorite </span></button>
+                            </form>
+                        {% endif %}
+{#affiche le nombre de votes reçus#}
+                        <small>nombre de like : {{ reponse.voter|length }}</small>
+                    </div>
+{#posté/publié#}
                     {% if reponse.dateModification is not null %}
                         <small class="text-body-secondary">modifié le {{reponse.dateModification|date("d.m.Y")}}</small>
                     {% else %}
                         <small class="text-body-secondary">posté le {{reponse.dateCreation|date("d.m.Y")}}</small>
                     {% endif %}
                 </div>
-                {# is granted permet de verifier si l'utilisateur a la permission de voir le lien de modification #}
-                {% if is_granted('REPONSE_VIEW', reponse) %}
-                    <a href="{{ path('app_response_edit', {id: reponse.id}) }}">Modifier</a>
-                {% endif %}
+                <div class="d-flex">
+{# is granted permet de verifier si l'utilisateur a la permission de voir le lien de modification #}
+                    {% if is_granted('REPONSE_VIEW', reponse) %}
+                        <a href="{{ path('app_response_edit', {id: reponse.id}) }}" class = "btn btn-link">Modifier</a>
+                    {% endif %}
+                    {% if is_granted('REPONSE_DELETE', reponse) %}
+                            <form action="{{ path('app_delete_reponse', {id:reponse.id}) }}" method="post" onsubmit="return confirm('Êtes-vous certain de vouloir supprimer cette réponse?')">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete_reponse-'~ reponse.id) }}">
+                                <button type"submit" class="btn btn-link">Supprimer</button>
+                            </form>
+                    {% endif %}
+                </div>
             </div>
         {% else %}
             <div class="list-group-item list-group-item-action">
                     <p class="mb-1">aucune réponses, veux-tu être le premier à commenter?</p>
             </div>
         {% endfor %}
-        {# formulaire de réponse #}
+{# formulaire de réponse #}
         {% if app.user %}
             <div class="mt-5">
                 <h2>Proposer une réponse</h2>

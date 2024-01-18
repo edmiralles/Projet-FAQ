@@ -12,17 +12,18 @@
             </div>
         {% endfor %}
         <ul>
-            <li><p class="mb-4"> Nom: {{ user.nom }}</p></li>
-            <li><p class="mb-4"> email: {{ user.email }}</p></li>
-            <li><p class="mb-4"> Photo de profil: <img src="{{ asset(user.avatar) }}" alt="{{ user.nom }}"></p></li>
+            <li><p class="mb-3"> Nom: {{ user.nom }}</p></li>
+            <li><p class="mb-3"> email: {{ user.email }}</p></li>
+            <li><p class="mb-3"> Photo de profil:</p>
+            <p><img src="{{ asset(user.avatar) }}" alt="{{ user.nom }}" style="width: 300px; height: 300px"></p></li>
         </ul>
         <div class="text-end">
             <a href="{{ path('app_user_profile_update', {id:app.user.id}) }}" class="btn btn-primary">Modifier mon profil</a>
-        <form action="{{ path('app_delete_profil') }}" method="post" onsubmit="return confirm('Êtes-vous certain de vouloir nous quitter?')">
-        <input type="hidden" name="_method" value="DELETE">
-        <input type="hidden" name="_token" value="{{ csrf_token('delete_user') }}">
-        <button type"submit" class="btn btn-danger">Supprimer mon compte</button>
-        </form>
+            <form action="{{ path('app_delete_profil') }}" method="post" onsubmit="return confirm('Êtes-vous certain de vouloir nous quitter?')">
+                <input type="hidden" name="_method" value="DELETE">
+                <input type="hidden" name="_token" value="{{ csrf_token('delete_user') }}">
+                <button type"submit" class="btn btn-danger">Supprimer mon compte</button>
+            </form>
         </div>
     </div>
 

@@ -2,6 +2,7 @@
 
 namespace App\Security\Voter;
 
+use App\Repository\ReponseRepository;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -10,12 +11,18 @@ class ReponseVoter extends Voter
 {
     public const EDIT = 'REPONSE_EDIT';
     public const VIEW = 'REPONSE_VIEW';
+    public const DELETE = 'REPONSE_DELETE';
+    public const VOTE = 'REPONSE_VOTE';
+
+    public function __construct(private ReponseRepository $reponseRepository){
+
+    }
 
     protected function supports(string $attribute, mixed $subject): bool
     {
         // replace with your own logic
         // https://symfony.com/doc/current/security/voters.html
-        return in_array($attribute, [self::EDIT, self::VIEW])
+        return in_array($attribute, [self::EDIT, self::VIEW, self::DELETE, self::VOTE])
             && $subject instanceof \App\Entity\Reponse;
     }
 
@@ -39,8 +46,12 @@ class ReponseVoter extends Voter
             case self::VIEW:
                 // logic to determine if the user can VIEW
                 // return true or false
+            case self::DELETE:
                 return $subject -> getUser() === $user;
                 break;
+            case self::VOTE:
+                $hasVoted = $this->reponseRepository->hasVoted($user, $subject->getQuestion());
+                return $hasVoted === false && $subject->getUser() !== $user;
         }
 
         return false;

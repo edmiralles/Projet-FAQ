@@ -60,7 +60,7 @@ class Question
         return $this->contenu;
     }
 
-    public function setContenu(string $contenu): static
+    public function setContenu(?string $contenu): static
     {
         $this->contenu = $contenu;
 

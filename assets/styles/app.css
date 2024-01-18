@@ -6,5 +6,8 @@ body {
 }
 .half-page{
     position: relative;
-    top: 20vh;
+    top: 15vh;
+}
+.question-modify{
+    margin-right: 12vw;
 }

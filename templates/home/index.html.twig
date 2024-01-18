@@ -26,17 +26,21 @@
                 {{ messageFlash }}
             </div>
         {% endfor %}
-
     </div>
         {% for question in questions %}
             <a href="{{ path('app_question', {id:question.id}) }}" class="list-group-item list-group-item-action">
+                {% if question.user is same as (app.user) %}
+                    <span class=" badge rounded-pill text-bg-success">
+                        Votre question
+                    </span>
+                {% endif %}
                 <div class="d-flex w-100 justify-content-between">
                     <h5 class="mb-1">{{question.titre}}</h5>
                     <small class="text-body-secondary">publié le : {{question.dateCreation|date("d.m.Y")}}</small>
                 </div>
-                    <p class="mb-1">{{question.contenu}}</p>
-                    <small lass="text-body-secondary">posée par : {{question.user.nom}}
-                    <img class="rounded-circle" src="{{ asset(question.user.avatar) }}" alt="{{question.user.nom}}"></small>
+                <p class="mb-1">{{question.contenu}}</p>
+                <small lass="text-body-secondary">posée par : {{question.user.nom}}
+                <img class="rounded-circle" src="{{ asset(question.user.avatar) }}" alt="{{question.user.nom}}" style="width: 25px; height: 25px"></small>
             </a>
         {% else %}
             <a href="#" class="list-group-item list-group-item-action">

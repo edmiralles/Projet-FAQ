@@ -10,6 +10,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class QuestionVoter extends Voter
 {
     public const ADD = 'QUESTION_ADD';
+    public const DELETE = 'QUESTION_DELETE';
+    public const UPDATE = 'QUESTION_UPDATE';
 
     public function __construct(
         private Security $security
@@ -20,11 +22,11 @@ class QuestionVoter extends Voter
     protected function supports(string $attribute, mixed $subject): bool
     {
         //si l'attribut correspond à la valeur de la constante "ADD", on applique les regles du voter
-        if($attribute ==self::ADD){
+        if($attribute == self::ADD){
             return true;
         }
 
-        return in_array($attribute, [self::ADD])
+        return in_array($attribute, [self::DELETE, self::UPDATE])
             && $subject instanceof \App\Entity\Question;
     }
 
@@ -40,6 +42,10 @@ class QuestionVoter extends Voter
         switch ($attribute) {
             case self::ADD:
                 return $this->security->isGranted('ROLE_USER');
+                break;
+            case self::DELETE:
+            case self::UPDATE:
+                return $subject->getUser() === $user;
                 break;
         }
 

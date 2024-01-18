@@ -2,7 +2,9 @@
 
 namespace App\Repository;
 
+use App\Entity\Question;
 use App\Entity\Reponse;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -21,6 +23,20 @@ class ReponseRepository extends ServiceEntityRepository
         parent::__construct($registry, Reponse::class);
     }
 
+    //permet de savoir si un utilisateur a deja coté pour une réponse sous une question
+    public function hasVoted(User $user, Question $question):bool
+    {
+        $results = $this->createQueryBuilder('reponse') // SELECT * FROM reponse
+            ->innerJoin('reponse.voter', 'voters') //INNER JOIN reponse_user ON reponse_user.reponse_id = reponse.id
+            ->where('voters.id = :user') // WHERE user_reponse.user_id = ?
+            ->andWhere('reponse.question = :question') // AND reponse.question_id = ?
+            ->setParameter('user', $user)
+            ->setParameter('question', $question)
+            ->getQuery() //execute
+            ->getResult(); //retourne les résultats trouvés
+
+            return count($results) > 0;
+    }
 //    /**
 //     * @return Reponse[] Returns an array of Reponse objects
 //     */
