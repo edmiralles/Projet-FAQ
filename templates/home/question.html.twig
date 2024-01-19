@@ -9,15 +9,23 @@
 {% block body %}
 {#question#}
 <div class="container mx-auto p-3 mb-2 bg-secondary text-white full-height">
-    <a href="{{ path('app_home') }}" class="text-white">retour</a>
+    <div class="d-flex w-100 justify-content-between">
+        <a href="{{ path('app_home') }}" class="text-white">retour</a>
+        {% if  is_granted('USER_ACCESS', question) and question.user is not same as app.user %}
+        <form action="{{ path('app_report', {id:question.id, type: 'question'}) }}" method="post">
+            <input type="hidden" name="_token" value="{{ csrf_token('report-question-'~ question.id) }}">
+            <button type"submit" class="btn btn-link text-white">Signaler</button>
+        </form>
+        {% endif %}
+    </div>
     <div class ="p-3 text-center">
         <h1>{{question.titre}}</h1>
         <p>{{question.contenu}}</p>
     </div>
     <div class="d-flex w-100 justify-content-between mb-2">
         <small>publié par {{question.user.nom}} le {{question.dateCreation|date("d.m.Y")}} </small>
+    <div class="d-flex">
             {% if is_granted('QUESTION_DELETE', question) %}
-            <div class="d-flex">
                 <form action="{{ path('app_question_update', {id:question.id}) }}" method="post">
                     <input type="hidden" name="_method" value="DELETE">
                     <input type="hidden" name="_token" value="{{ csrf_token('update_question') }}">
@@ -27,9 +35,9 @@
                     <input type="hidden" name="_method" value="DELETE">
                     <input type="hidden" name="_token" value="{{ csrf_token('delete_question') }}">
                     <button type"submit" class="btn btn-danger question-modify">Supprimer</button>
-                </form>
-            </div>
+                </form> 
         {% endif %}
+    </div>
         <img class="rounded-circle" src="{{ asset(question.user.avatar) }}" alt="{{question.user.nom}}" style="width: 25px; height: 25px">
     </div>
 {#messages flash#}
@@ -70,7 +78,7 @@
                         {% if is_granted('REPONSE_VOTE', reponse) %}
                             <form action="{{ path('app_reponse_vote', {id: reponse.id}) }}" method="post">
                                 <input type="hidden" name="_token" value="{{ csrf_token('vote-'~ reponse.id) }}">
-                                <button type"submit"><span class="material-symbols-outlined"> favorite </span></button>
+                                <button type"submit" class="btn btn-link"><span class="material-symbols-outlined "> favorite </span></button>
                             </form>
                         {% endif %}
 {#affiche le nombre de votes reçus#}
@@ -89,11 +97,17 @@
                         <a href="{{ path('app_response_edit', {id: reponse.id}) }}" class = "btn btn-link">Modifier</a>
                     {% endif %}
                     {% if is_granted('REPONSE_DELETE', reponse) %}
-                            <form action="{{ path('app_delete_reponse', {id:reponse.id}) }}" method="post" onsubmit="return confirm('Êtes-vous certain de vouloir supprimer cette réponse?')">
-                                <input type="hidden" name="_method" value="DELETE">
-                                <input type="hidden" name="_token" value="{{ csrf_token('delete_reponse-'~ reponse.id) }}">
-                                <button type"submit" class="btn btn-link">Supprimer</button>
-                            </form>
+                        <form action="{{ path('app_delete_reponse', {id:reponse.id}) }}" method="post" onsubmit="return confirm('Êtes-vous certain de vouloir supprimer cette réponse?')">
+                            <input type="hidden" name="_method" value="DELETE">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete_reponse-'~ reponse.id) }}">
+                            <button type"submit" class="btn btn-link">Supprimer</button>
+                        </form>
+                    {% endif %}
+                    {% if is_granted('USER_ACCESS', reponse) and reponse.user is not same as app.user %}
+                        <form action="{{ path('app_report', {id:reponse.id, type: 'reponse'}) }}" method="post">
+                            <input type="hidden" name="_token" value="{{ csrf_token('report-reponse-'~ reponse.id) }}">
+                            <button type"submit" class="btn btn-link">Signaler</button>
+                        </form>
                     {% endif %}
                 </div>
             </div>

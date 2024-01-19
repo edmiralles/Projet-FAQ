@@ -36,6 +36,15 @@ class UserFixtures extends Fixture
             $this->addReference('user'. $i, $user);
         }
 
+        //creation d'un administrateur de test
+        $admin = new User();
+        $admin->setPassword($this->passwordHasher->hashPassword($user,'secret'));
+        $admin->setNom('Leon LeLion');
+        $admin->setRoles(['ROLE_ADMIN']);
+        $admin->setEMail('LeonLeLion@gmail.com');
+        $admin->setISVerified(true);
+
+        $manager->persist($admin);
         //met à jour les modifications en BDD
         $manager->flush();
     }

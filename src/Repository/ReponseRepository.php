@@ -37,6 +37,17 @@ class ReponseRepository extends ServiceEntityRepository
 
             return count($results) > 0;
     }
+
+    public function getFamousReponse():array
+    {
+        return $this->createQueryBuilder('reponse')
+            ->innerJoin('reponse.voter', 'voter')
+            ->groupBy('reponse.id')
+            ->having('COUNT(voter) >= 10')
+            ->getQuery()
+            ->getResult();
+        
+    }
 //    /**
 //     * @return Reponse[] Returns an array of Reponse objects
 //     */

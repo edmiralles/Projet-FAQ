@@ -75,7 +75,7 @@ class HomeController extends AbstractController
 
             //envoyer un email
             $email = (new TemplatedEmail())
-                ->from(new Address('noreply@gaq.com', 'FAQ'))
+                ->from(new Address('noreply@faq.com', 'FAQ'))
                 ->to(new Address($question->getUser()->getEmail(), $question->getUser()->getNom()))
                 ->subject('Bonne nouvelle !')
             

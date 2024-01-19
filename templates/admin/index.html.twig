@@ -27,26 +27,31 @@
                         Votre profil
                     </span>
                 {% endif %}
+                {% if 'ROLE_ADMIN' in user.roles %}
+                    <span class=" badge rounded-pill text-bg-warning">
+                        Administrateur
+                    </span>
+                {% endif %}
                 <div class =" d-flex w-100 justify-content-between">
                     <div>
-                        <h5 class="mb-1">{{user.nom}}</h5>
-                        {#<small class="text-body-secondary">{{user.roles}}</small>#}
-                        
+                        <h5 class="mb-1">{{user.nom}}</h5>  
                         <p class="mb-1">{{user.email}}</p>
                         <img src="{{ asset(user.avatar) }}" alt="{{user.nom}}" style="width: 50px; height: 50px"></small>
                     </div>
-                    <div>
-                        <form action="" method="post" class="mb-2 mt-2">
-                            <input type="hidden" name="_method" value="DELETE">
-                            <input type="hidden" name="_token" value="">
-                            <button type"submit" class="btn btn-primary">modifier le profil</button>
-                        </form>
-                        <form action="{{ path('app_delete_profil', {id:user.id}) }}" method="post" onsubmit="return confirm('Êtes-vous certain de vouloir supprimer cet utilisateur?')">
-                            <input type="hidden" name="_method" value="DELETE">
-                            <input type="hidden" name="_token" value="{{ csrf_token('delete_user-'~ user.id) }}">
-                            <button type"submit" class="btn btn-danger">Supprimer le profil</button>
-                        </form>
-                    </div>
+                    {# affiche le bouton supprimer et rendre administrateur si l'utilisateur ne posséde pas le role admin #}
+                    {% if 'ROLE_ADMIN' not in user.roles %}
+                        <div>
+                            <form action="{{ path('app_admin_change_role', {id:user.id}) }}" method="post" class="mb-2 mt-2">
+                                <input type="hidden" name="_token" value="">
+                                <button type"submit" class="btn btn-primary">Rendre administrateur</button>
+                            </form>
+                            <form action="{{ path('app_delete_profil', {id:user.id}) }}" method="post" onsubmit="return confirm('Êtes-vous certain de vouloir supprimer cet utilisateur?')">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete_user-'~ user.id) }}">
+                                <button type"submit" class="btn btn-danger">Supprimer le profil</button>
+                            </form>
+                        </div>
+                    {% endif %}
                 </div>
             </a>
         {% else %}

@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Suivi de l'affluence{% endblock %}
+
+{% block body %}
+
+<div class="container mx-auto bg-secondary text-white full-height">
+    <div class="list-group p-3">
+        <div class ="p-3 text-center">
+        <h1>Meilleures Questions</h1>
+        {% for question in questions %}
+            <a href="{{ path('app_question', {id:question.id}) }}" class="list-group-item list-group-item-action">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">{{question.titre}}</h5>
+                    <small class="text-body-secondary">publié le : {{question.dateCreation|date("d.m.Y")}}</small>
+                </div>
+                <p class="mb-1">{{question.contenu}}</p>
+                <small lass="text-body-secondary">posée par : {{question.user.nom}}
+                <img class="rounded-circle" src="{{ asset(question.user.avatar) }}" alt="{{question.user.nom}}" style="width: 25px; height: 25px"></small>
+            </a>
+        {% else %}
+            <a class="list-group-item list-group-item-action">
+                <p class="mb-1">Il n'y a aucune question avec au moins 6 commentaires </p>
+            </a>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

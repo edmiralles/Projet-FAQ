@@ -41,6 +41,13 @@ class ReponseFixtures extends Fixture implements DependentFixtureInterface
             $reponse -> setUser($user);
             $reponse -> setQuestion($question);
 
+            for($j=0; $j < $faker->numberBetween(0, 15); $j++){
+                //recupere un utilisateur de maniere aleatoire
+                $user = $this->getReference("user{$faker->numberBetween(0, 49)}");
+                //ajoute l'utilisateur à la collection
+                $reponse->addVoter($user);
+            }
+
             //persiste les données
             $manager -> persist($reponse);
 

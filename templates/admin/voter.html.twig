@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Votes Nalysis{% endblock %}
+
+{% block stylesheets %}
+{% endblock %}
+
+{% block body %}
+{#question#}
+<div class="container mx-auto bg-secondary text-white full-height">
+    <div class="list-group p-3">
+        {% for reponse in reponses %}
+            <a href="{{ path('app_question', {id:reponse.question.id}) }}" class="list-group-item list-group-item-action">
+                <p class="mb-1">{{reponse.contenu}}</p>
+                <div class="d-flex w-100 justify-content-between">
+                    <small lass="text-body-secondary">posté par : {{reponse.user.nom}}
+                        <img class="rounded-circle" src="{{asset(reponse.user.avatar)}}" alt="{{reponse.user.nom}}" style="width: 25px; height: 25px">
+                    </small>
+                    <div class="d-flex">
+                        <small>nombre de like : {{ reponse.voter|length }}</small>
+                    </div>
+                    {% if reponse.dateModification is not null %}
+                        <small class="text-body-secondary">modifié le {{reponse.dateModification|date("d.m.Y")}}</small>
+                    {% else %}
+                        <small class="text-body-secondary">posté le {{reponse.dateCreation|date("d.m.Y")}}</small>
+                    {% endif %}
+                </div>
+            </a>
+        {% else %}
+            <div class="list-group-item list-group-item-action">
+                    <p class="mb-1">aucune réponses n'a reçu 10 votes</p>
+            </div>
+            
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

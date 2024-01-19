@@ -8,25 +8,25 @@
 <div class="container mx-auto bg-secondary text-white full-height">
     <div class="list-group p-3">
         <div class ="p-3 text-center">
-        <h1>Foire aux questions</h1>
-        {% if app.user %}
-            <a href="{{ path('app_new_question') }}" class="text-white"> posez votre question ici!</a>
-        {% else %}
-            <p class="text-center my-5">
-            Pour poster une question veuillez vous <a href="{{ path('app_login') }}" class ="text-white"> connecter </a>
-            ou  <a href="{{ path('app_register') }}" class ="text-white"> ouvrir un compte </a>
-        {% endif %}
-        {% for messageFlash in app.flashes('success') %}
-                <div class="alert alert-success">
+            <h1>Foire aux questions</h1>
+            {% if app.user %}
+                <a href="{{ path('app_new_question') }}" class="text-white"> posez votre question ici!</a>
+            {% else %}
+                <p class="text-center my-5">
+                Pour poster une question veuillez vous <a href="{{ path('app_login') }}" class ="text-white"> connecter </a>
+                ou  <a href="{{ path('app_register') }}" class ="text-white"> ouvrir un compte </a></p>
+            {% endif %}
+            {% for messageFlash in app.flashes('success') %}
+                    <div class="alert alert-success">
+                        {{ messageFlash }}
+                    </div>
+            {% endfor %}
+                    {% for messageFlash in app.flashes('error') %}
+                <div class="alert alert-danger">
                     {{ messageFlash }}
                 </div>
-        {% endfor %}
-                {% for messageFlash in app.flashes('error') %}
-            <div class="alert alert-danger">
-                {{ messageFlash }}
-            </div>
-        {% endfor %}
-    </div>
+            {% endfor %}
+        </div>
         {% for question in questions %}
             <a href="{{ path('app_question', {id:question.id}) }}" class="list-group-item list-group-item-action">
                 {% if question.user is same as (app.user) %}

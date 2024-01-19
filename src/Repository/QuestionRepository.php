@@ -21,6 +21,23 @@ class QuestionRepository extends ServiceEntityRepository
         parent::__construct($registry, Question::class);
     }
 
+    public function countFamousQuestion(): array
+    {
+        return $this->createQueryBuilder('question')
+            ->innerJoin('question.reponses', 'reponses')
+            ->groupBy('question.id')
+            ->having('COUNT(reponses.id) >= 6')
+            ->getQuery()
+            ->getResult();
+        
+    }
+
+    /*  SELECT question.*, COUNT (reponse.id) AS nb_reponses
+        FROM question 
+        INNER JOIN reponse ON reponse.question_id = question.id
+        GROUP BY question.id
+        HAVING COUNT(reponse.id) > 6
+    */
 //    /**
 //     * @return Question[] Returns an array of Question objects
 //     */
