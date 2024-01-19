@@ -10,6 +10,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class UserVoter extends Voter
 {
     public const ACCESS = 'USER_ACCESS';
+    public const KEY = 'ADMIN_KEY';
 
     public function __construct(
         private Security $security
@@ -22,7 +23,12 @@ class UserVoter extends Voter
         if($attribute == self::ACCESS){
             return true;
         }
-        return in_array($attribute, [self::ACCESS])
+
+        if($attribute == self::KEY){
+            return true;
+        }
+
+        return in_array($attribute, [self::ACCESS, self::KEY])
             && $subject instanceof \App\Entity\User;
     }
 
@@ -38,6 +44,9 @@ class UserVoter extends Voter
         switch ($attribute) {
             case self::ACCESS:
                 return $this->security->isGranted('ROLE_USER');
+                break;
+            case self::KEY:
+                return $this->security->isGranted('ROLE_ADMIN');
                 break;
         }
 

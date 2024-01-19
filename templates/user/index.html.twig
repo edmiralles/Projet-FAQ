@@ -24,6 +24,9 @@
                 <input type="hidden" name="_token" value="{{ csrf_token('delete_user') }}">
                 <button type"submit" class="btn btn-danger">Supprimer mon compte</button>
             </form>
+            {% if is_granted('ADMIN_KEY') %}
+            <a href="{{ path('app_admin') }}" class="btn btn-warning">administration</a>
+            {% endif %}
         </div>
     </div>
 

@@ -38,6 +38,10 @@ class QuestionVoter extends Voter
             return false;
         }
 
+        if ($this->security->isGranted('ROLE_ADMIN')) {
+            return true;
+        }
+
         // ... (check conditions and return true to grant permission) ...
         switch ($attribute) {
             case self::ADD:
@@ -45,7 +49,7 @@ class QuestionVoter extends Voter
                 break;
             case self::DELETE:
             case self::UPDATE:
-                return $subject->getUser() === $user;
+                return $subject->getUser() === $user || $this->security->isGranted('ROLE_ADMIN');
                 break;
         }
 

@@ -70,25 +70,39 @@ class UserController extends AbstractController
             ]);
     }
 
-    #[Route(path: '/delete/profil', name: 'app_delete_profil')]
-    public function deleteProfil(Request $request): Response
+    #[Route(path: '/delete/profil{id?}', name: 'app_delete_profil')]
+    public function deleteProfil(?User $user, Request $request): Response
     {
         //recuperation du jeton CRSF du formulaire
         $token = $request->request->get('_token');
         $method = $request->request->get('_method');
 
-        if($method === 'DELETE' && $this->isCsrfTokenValid('delete_user', $token)){
-        /** @var User $user */
-        $user =$this->getUser();
-
-        if (!$user) {
-            throw $this->createNotFoundException("pas d'utilisateur trouvé avec l'id $user");
+        //private function isValidCSRFToken qui reprend ce code si je voulais le découper
+        // verifier le jeton crsf selon si l'on est un admin ou pas
+        if($user !== null && $this->isGranted('ROLE_ADMIN')){
+            $isTokenValid = $this->isCsrfTokenValid('delete_user-'. $user->getId(), $token);
+        }else{
+            $isTokenValid = $this->isCsrfTokenValid('delete_user', $token);
         }
+        if($method === 'DELETE' && $isTokenValid/*$this->isCsrfTokenValid('delete_user', $token)version sans admin*//*isValidCSRFToken($user, $token) si j'avais coupé ma methode je la regintre avec ma nouvelle private methode qui reprend le code*/){
+        /** @var User $user */
+        $user = $user ?? $this->getUser();
+        $userConnected = $this->getUser();
+
+        //supprime dans la bdd
+        $this->entityManager->remove($user);
+        $this->entityManager->flush();
 
         //supprimer l'avatar de l'utilisateur
         $filesystem = new Filesystem();
         if($user->getAvatar() !== 'imgs/user_default.jpg'){
             $filesystem->remove($user->getAvatar());
+        }
+
+        if($user !== $userConnected && $this->isGranted('ROLE_ADMIN')){
+            $this->addFlash('success', 'Le compte utilisateur est désormais supprimé');
+
+            return $this->redirectToRoute('app_admin');
         }
         //invalidation de la session utilisateur
         $session = $request->getSession();
@@ -97,8 +111,6 @@ class UserController extends AbstractController
         //annule le token de sécurité utilisateur qui etait lié à la session de connexion
         $this->container->get('security.token_storage')->setToken(null);
 
-        $this->entityManager->remove($user);
-        $this->entityManager->flush();
 
         $this->addFlash('success', 'votre compte est désormais supprimé');
 
@@ -108,6 +120,18 @@ class UserController extends AbstractController
         $this->addFlash('error', 'JETON crsf invalide');
         return $this->redirectToRoute('app_home');
     }
+
+
+    /*private function isValidCSRFToken(?User $user, string $token):bool
+    {
+        if($user !== null && $this->isGranted('ROLE_ADMIN')){
+            $isTokenValid = $this->isCsrfTokenValid('delete_user-'. $user->getId(), $token);
+        }else{
+            $isTokenValid = $this->isCsrfTokenValid('delete_user', $token);
+        }
+
+        return $this->isCsrfTokenValid('delete_user', $token);
+    }*/
 }
 
 

@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Espace administrateur{% endblock %}
+
+{% block body %}
+
+
+<div class="container mx-auto bg-secondary text-white full-height">
+    <div class="list-group p-3">
+        <div class ="p-3 text-center">
+        <h1>Administration</h1>
+        {% for messageFlash in app.flashes('success') %}
+                <div class="alert alert-success">
+                    {{ messageFlash }}
+                </div>
+        {% endfor %}
+                {% for messageFlash in app.flashes('error') %}
+            <div class="alert alert-danger">
+                {{ messageFlash }}
+            </div>
+        {% endfor %}
+    </div>
+        {% for user in users %}
+            <a class="list-group-item list-group-item-action">
+                {% if user is same as (app.user) %}
+                    <span class=" badge rounded-pill text-bg-success">
+                        Votre profil
+                    </span>
+                {% endif %}
+                <div class =" d-flex w-100 justify-content-between">
+                    <div>
+                        <h5 class="mb-1">{{user.nom}}</h5>
+                        {#<small class="text-body-secondary">{{user.roles}}</small>#}
+                        
+                        <p class="mb-1">{{user.email}}</p>
+                        <img src="{{ asset(user.avatar) }}" alt="{{user.nom}}" style="width: 50px; height: 50px"></small>
+                    </div>
+                    <div>
+                        <form action="" method="post" class="mb-2 mt-2">
+                            <input type="hidden" name="_method" value="DELETE">
+                            <input type="hidden" name="_token" value="">
+                            <button type"submit" class="btn btn-primary">modifier le profil</button>
+                        </form>
+                        <form action="{{ path('app_delete_profil', {id:user.id}) }}" method="post" onsubmit="return confirm('Êtes-vous certain de vouloir supprimer cet utilisateur?')">
+                            <input type="hidden" name="_method" value="DELETE">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete_user-'~ user.id) }}">
+                            <button type"submit" class="btn btn-danger">Supprimer le profil</button>
+                        </form>
+                    </div>
+                </div>
+            </a>
+        {% else %}
+            <a class="list-group-item list-group-item-action">
+                <p class="mb-1">Il n'y a aucune profil? </p>
+                <small lass="text-body-secondary">Vérifie ta base de donnée!</small>
+            </a>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
